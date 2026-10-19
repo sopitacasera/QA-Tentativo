@@ -1,0 +1,11 @@
+{
+  "name": "ejercicio-02-petstore",
+  "private": true,
+  "description": "Pruebas de la API PetStore del enunciado QA-BP.",
+  "scripts": {
+    "test": "cypress run"
+  },
+  "devDependencies": {
+    "cypress": "15.21.1"
+  }
+}

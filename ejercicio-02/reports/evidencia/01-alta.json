@@ -1,0 +1,23 @@
+{
+  "caso": "CP-01 Añadir una mascota",
+  "metodo": "POST /v2/pet",
+  "entrada": {
+    "id": 147028996,
+    "name": "Mascota-147028996",
+    "photoUrls": [
+      "https://example.com/mascota.jpg"
+    ],
+    "status": "available"
+  },
+  "http": 200,
+  "duracionMs": 677,
+  "salida": {
+    "id": 147028996,
+    "name": "Mascota-147028996",
+    "photoUrls": [
+      "https://example.com/mascota.jpg"
+    ],
+    "tags": [],
+    "status": "available"
+  }
+}

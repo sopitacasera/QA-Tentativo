@@ -1,0 +1,13 @@
+{
+  "caso": "CP-04 Búsqueda por estado sold",
+  "metodo": "GET /v2/pet/findByStatus?status=sold",
+  "http": 200,
+  "duracionMs": 328,
+  "intentos": 1,
+  "totalEnLaLista": 417,
+  "mascotaEncontrada": {
+    "id": 147028996,
+    "name": "Mascota-vendida-147028996",
+    "status": "sold"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "caso": "CP-05 Id inexistente",
+  "metodo": "GET /v2/pet/404404404",
+  "http": 404,
+  "duracionMs": 109,
+  "salida": {
+    "code": 1,
+    "type": "error",
+    "message": "Pet not found"
+  }
+}

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>Ejercicio 02 - PetStore API</title>
+  <style>
+    body { font-family: Helvetica, Arial, sans-serif; color: #1f2937; background: #f8fafc; margin: 24px; }
+    h1 { font-size: 28px; margin-bottom: 4px; }
+    .verdict { max-width: 920px; margin: 16px 0; padding: 14px 16px; background: #fff; border: 1px solid #d6d3d1; border-left: 4px solid #0f766e; }
+    table { border-collapse: collapse; background: #fff; width: 100%; max-width: 1100px; }
+    th, td { border: 1px solid #e5e7eb; padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #f1f5f9; }
+    pre { white-space: pre-wrap; font-size: 12px; margin: 0; }
+  </style>
+</head>
+<body>
+  <h1>Ejercicio 02 - PetStore API</h1>
+  <p>Generado el 18/10/2026, 9:38:20 p. m. con Cypress.</p>
+  <div class="verdict">
+    <h2>Resultado del ejercicio</h2>
+    <p><strong>Listo para entregar.</strong>
+    5 pasaron, 0 fallaron, en 2 segundos.</p>
+    <p>CP-01 crea la mascota. CP-02 la consulta por id. CP-03 cambia el nombre y el estado a sold.
+    CP-04 la busca entre las vendidas. CP-05 comprueba que un id inexistente responde 404 y no crea una orden falsa.</p>
+    <p>Los hallazgos están en conclusiones.txt.</p>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Resultado</th><th>Caso</th><th>Operación</th><th>HTTP</th><th>Duración</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+      <td>Pasó</td>
+      <td>CP-01 Añadir una mascota</td>
+      <td><code>POST /v2/pet</code></td>
+      <td>200</td>
+      <td>677 ms</td>
+    </tr>
+    <tr class="detalle"><td colspan="5"><pre>{
+  "caso": "CP-01 Añadir una mascota",
+  "metodo": "POST /v2/pet",
+  "entrada": {
+    "id": 147028996,
+    "name": "Mascota-147028996",
+    "photoUrls": [
+      "https://example.com/mascota.jpg"
+    ],
+    "status": "available"
+  },
+  "http": 200,
+  "duracionMs": 677,
+  "salida": {
+    "id": 147028996,
+    "name": "Mascota-147028996",
+    "photoUrls": [
+      "https://example.com/mascota.jpg"
+    ],
+    "tags": [],
+    "status": "available"
+  }
+}</pre></td></tr>
+<tr>
+      <td>Pasó</td>
+      <td>CP-02 Consulta por id</td>
+      <td><code>GET /v2/pet/147028996</code></td>
+      <td>200</td>
+      <td>109 ms</td>
+    </tr>
+    <tr class="detalle"><td colspan="5"><pre>{
+  "caso": "CP-02 Consulta por id",
+  "metodo": "GET /v2/pet/147028996",
+  "http": 200,
+  "duracionMs": 109,
+  "salida": {
+    "id": 147028996,
+    "name": "Mascota-147028996",
+    "photoUrls": [
+      "https://example.com/mascota.jpg"
+    ],
+    "tags": [],
+    "status": "available"
+  }
+}</pre></td></tr>
+<tr>
+      <td>Pasó</td>
+      <td>CP-03 Actualizar nombre y estado sold</td>
+      <td><code>PUT /v2/pet y GET /v2/pet/{id}</code></td>
+      <td>200</td>
+      <td>139 ms</td>
+    </tr>
+    <tr class="detalle"><td colspan="5"><pre>{
+  "caso": "CP-03 Actualizar nombre y estado sold",
+  "metodo": "PUT /v2/pet y GET /v2/pet/{id}",
+  "entrada": {
+    "id": 147028996,
+    "name": "Mascota-vendida-147028996",
+    "photoUrls": [
+      "https://example.com/mascota.jpg"
+    ],
+    "status": "sold"
+  },
+  "httpPut": 200,
+  "httpGet": 200,
+  "duracionMs": 139,
+  "salida": {
+    "id": 147028996,
+    "name": "Mascota-vendida-147028996",
+    "photoUrls": [
+      "https://example.com/mascota.jpg"
+    ],
+    "tags": [],
+    "status": "sold"
+  }
+}</pre></td></tr>
+<tr>
+      <td>Pasó</td>
+      <td>CP-04 Búsqueda por estado sold</td>
+      <td><code>GET /v2/pet/findByStatus?status=sold</code></td>
+      <td>200</td>
+      <td>328 ms</td>
+    </tr>
+    <tr class="detalle"><td colspan="5"><pre>{
+  "caso": "CP-04 Búsqueda por estado sold",
+  "metodo": "GET /v2/pet/findByStatus?status=sold",
+  "http": 200,
+  "duracionMs": 328,
+  "intentos": 1,
+  "totalEnLaLista": 417,
+  "mascotaEncontrada": {
+    "id": 147028996,
+    "name": "Mascota-vendida-147028996",
+    "status": "sold"
+  }
+}</pre></td></tr>
+<tr>
+      <td>Pasó</td>
+      <td>CP-05 Id inexistente</td>
+      <td><code>GET /v2/pet/404404404</code></td>
+      <td>404</td>
+      <td>109 ms</td>
+    </tr>
+    <tr class="detalle"><td colspan="5"><pre>{
+  "caso": "CP-05 Id inexistente",
+  "metodo": "GET /v2/pet/404404404",
+  "http": 404,
+  "duracionMs": 109,
+  "salida": {
+    "code": 1,
+    "type": "error",
+    "message": "Pet not found"
+  }
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

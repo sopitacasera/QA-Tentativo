@@ -1,0 +1,198 @@
+CONCLUSIONES - Prueba E2E Guest Checkout
+Tienda: http://opencart.abstracta.us/
+Ejecución registrada: 2026-10-18 21:21, hora local
+Resultado de la suite: 3 passed en 76.72 segundos
+Navegador: Chrome headless. Python 3.14.3
+Correo sintético de la orden: qa.guest.a4975abed3cb@example.com
+
+
+1. Veredicto
+
+El ejercicio se puede entregar. El flujo que pide el enunciado pasa, deja
+evidencia y el título final es exactamente "Your order has been placed!".
+
+Si esta misma tienda fuera a producción, la recomendación sería no liberar.
+El carrito avisa que no hay stock y aun así cobra, y el envío de $8.00 no
+cuadra con la línea de $5.00 de la confirmación. Eso está abajo, con
+severidad y prioridad. No se convirtió en fallo de la prueba: el oráculo
+del enunciado es completar la compra, y la compra se completa.
+
+
+Trazabilidad del enunciado
+
+Pedido                                      Prueba y evidencia
+Agregar dos productos al carrito            CP-01. Minicart: 2 item(s) - $725.20
+Visualizar el carrito                       CP-01. 01-carrito.png. Cantidad 1 en cada uno
+Guest Checkout                              CP-01. Opción guest, no registro
+Confirmación "Your order has been placed!"  CP-01. 03-orden-colocada.png y la URL checkout/success
+
+
+2. Diseño de la prueba
+
+CP-01. Camino del enunciado. Positivo.
+Precondición: carrito vacío, sesión nueva, demo disponible.
+Datos: MacBook e iPhone, invitado sintético, Reino Unido, Greater London,
+Flat Rate, Cash On Delivery, misma dirección de entrega y facturación.
+Resultado esperado: los dos productos en el carrito y en la confirmación,
+y el título exacto de la orden.
+Resultado obtenido: passed. Después de confirmar, el minicart volvió a
+0 item(s) - $0.00. La orden se registró.
+
+CP-02. Facturación vacía. Negativo de frontera.
+Precondición: un producto en el carrito. Basta uno, porque el riesgo es el
+formulario y no la cantidad.
+Resultado esperado: la tienda rechaza el paso y no crea la orden.
+Resultado obtenido: passed. Mensajes reales de esta corrida:
+- First Name must be between 1 and 32 characters!
+- Last Name must be between 1 and 32 characters!
+- E-Mail address does not appear to be valid!
+- Telephone must be between 3 and 32 characters!
+- Address 1 must be between 3 and 128 characters!
+- City must be between 2 and 128 characters!
+- Postcode must be between 2 and 10 characters!
+- Please select a region / state!
+La URL no llegó a checkout/success. Evidencia: 04-facturacion-vacia.png
+
+CP-03. Términos sin aceptar. Negativo de regla de negocio.
+Precondición: iPhone en el carrito, facturación válida, pago Cash On Delivery,
+casilla Terms & Conditions sin marcar.
+Resultado esperado: la tienda no abre Confirm Order y no coloca la orden.
+Resultado obtenido: passed.
+"Warning: You must agree to the Terms & Conditions!"
+Evidencia: 05-sin-aceptar-terminos.png
+
+Casos pensados y dejados fuera, a propósito
+
+- Usuario registrado, cupón, gift certificate y dirección de entrega distinta.
+  El enunciado no los pide. Automatizarlos alarga la entrega sin subir
+  la cobertura del pedido.
+- Apple Cinema 30" y Canon EOS 5D. Piden opciones obligatorias. No sirven
+  para este flujo. La suite rechaza esos nombres si alguien los pone en el JSON.
+- Pruebas de API, base de datos, unitarias y de carga. No hay contrato,
+  umbral ni ambiente aislado en el enunciado. Declararlas sin evidencia
+  sería inflar el informe.
+- Pipeline en cada commit. No. Cada corrida del camino feliz crea una orden
+  real en una demo compartida. Eso se ejecuta a mano, no en un bucle.
+
+
+3. Defectos
+
+DEF-01. El carrito vende con aviso de sin stock.
+Severidad: alta. Prioridad: alta. Bloquea una salida a producción: sí.
+Pasos: agregar MacBook e iPhone, abrir Shopping Cart, seguir hasta Confirm Order.
+Esperado: si el producto no tiene stock, el checkout no deja colocar la orden.
+Actual: ambos salen con "***" y el aviso
+"Products marked with *** are not available in the desired quantity or not in stock!".
+Confirm Order no repite el aviso y la página de éxito vacía el carrito.
+Evidencia: 01-carrito.png y 03-orden-colocada.png
+Causa probable: la demo tiene activo el checkout con stock insuficiente.
+El "***" es la marca habitual de OpenCart para ese caso. No se revisó el
+admin de la tienda; la causa queda como la más plausible, no como un hecho
+de código.
+Regresión: repetir CP-01 cuando cambien el control de stock. El caso del
+enunciado debe seguir llegando al mensaje final; el aviso "***" no debería
+convivir con una orden colocada.
+
+DEF-02. El envío de $8.00 no cuadra con el desglose.
+Severidad: media. Prioridad: alta. Bloquea una salida a producción: sí.
+El impacto es dinero, por eso la prioridad queda por encima de la severidad.
+Esperado: el método de envío, la línea de la confirmación y el total cuentan
+el mismo cargo.
+Actual, en la misma orden:
+- El método dice "Flat Shipping Rate - $8.00".
+- La confirmación dice "Flat Shipping Rate: $5.00".
+- Carrito, antes del envío: subtotal $601.00, eco tax $4.00, VAT $120.20, total $725.20.
+- Confirmación: subtotal $601.00, envío $5.00, eco tax $6.00, VAT $121.20, total $733.20.
+El total sube $8.00, que es lo anunciado. El desglose muestra $5.00 y esconde
+$3.00 en eco tax (+$2.00) y VAT (+$1.00).
+Evidencia: 02-confirmacion-de-orden.png y reports/execution.log
+Causa probable: la etiqueta del método y las líneas de impuesto no salen del
+mismo cálculo visible. No se afirma cuál de las dos cifras es la correcta.
+Regresión: comparar la etiqueta del método contra la tabla de Confirm Order.
+
+DEF-03. El título visible del carrito no dice Shopping Cart.
+Severidad: baja. Prioridad: baja. Bloquea producción: no.
+Esperado: el encabezado de la página dice Shopping Cart.
+Actual: la pestaña y la miga dicen Shopping Cart. El encabezado visible dice
+"Use Gift Certificate (10.00kg)". El peso corresponde a los dos productos;
+el texto está mezclado con otro bloque.
+Evidencia: 01-carrito.png
+Causa probable: la plantilla o el título de esa vista toma el texto de otro
+bloque. No impide comprar.
+
+DEF-04. La tienda mezcla HTTP y HTTPS.
+Severidad: baja. Prioridad: baja en esta corrida. Bloquea producción: no,
+mientras el pago siga siendo contra entrega.
+Actual: la URL del enunciado es HTTP y Chrome la sube a HTTPS. Shopping Cart
+sigue apuntando a HTTP. Checkout y My Account ya van por HTTPS.
+Causa probable: enlaces armados con el esquema viejo. En una tienda con pago
+con tarjeta la prioridad subiría.
+
+Observación de datos, no defecto de la compra pedida.
+Con el carrito solo con MacBook, el formulario de invitado no muestra la
+casilla de misma dirección de envío. Por eso CP-03 usa iPhone, que sí permite
+llegar al pago y frenar por los términos. El flujo del enunciado, con los dos
+productos, sí pasa por Flat Rate. No se abre un defecto hasta ver la ficha
+del producto en el admin: puede ser un MacBook marcado como no enviable.
+
+
+4. Qué sí entra en esta entrega, y qué no
+
+Diseño y ejecución
+Sí. Un positivo con precondición, datos y resultado, más frontera y una regla
+de negocio. La evidencia está en reports/.
+
+Gestión de defectos
+Sí, limitada a lo que la corrida mostró. Cada defecto tiene reproducción,
+esperado, actual, severidad, prioridad y causa probable. No hay seguimiento
+en un gestor porque el enunciado no da uno.
+
+Automatización de UI
+Sí. Selenium WebDriver, pytest y Page Object. Esperas explícitas. La espera
+implícita está en cero.
+
+Unitarias, API, integración de servicios, base de datos y CI
+No se hicieron. No hay un servicio propio que probar ni un umbral acordado.
+Un pipeline que compre solo en cada push gastaría la demo compartida.
+
+Rendimiento, concurrencia, accesibilidad formal y seguridad ofensiva
+No se midieron. Lo único no funcional que queda registrado es lo visto de
+paso: HTTP mezclado con HTTPS, y que la suite rechaza cualquier host distinto
+de opencart.abstracta.us para no disparar una compra en otro sitio.
+
+Criterio de liberación
+Sí, y queda partido en dos decisiones. Abajo.
+
+
+5. Criterio de salida
+
+Entrada para ejecutar: Chrome o Edge, Python 3.11 o superior, internet y la
+demo respondiendo.
+
+Salida de este ejercicio: CP-01, CP-02 y CP-03 en verde, informe HTML, y el
+título exacto del enunciado en CP-01.
+
+Decisión: entregar el ejercicio.
+
+Salida si esto fuera la tienda real: no liberar hasta corregir DEF-01 y
+DEF-02 y repetir CP-01. DEF-03 y DEF-04 no alcanzan, solos, para frenar.
+
+Riesgo que sigue abierto: el enlace Shopping Cart a veces no navega al primer
+clic. En esta corrida pasó dos veces y la prueba siguió el href de ese mismo
+enlace. No se reporta como defecto de negocio. Si vuelve a pasar en una
+revisión manual, ahí sí vale un defecto de UI.
+
+
+6. Evidencia
+
+reports/report.html
+reports/junit.xml
+reports/execution.log
+reports/evidence/01-carrito.png
+reports/evidence/02-confirmacion-de-orden.png
+reports/evidence/03-orden-colocada.png
+reports/evidence/04-facturacion-vacia.png
+reports/evidence/05-sin-aceptar-terminos.png
+
+Cómo volver a ejecutarla está en readme.txt. Cada corrida de CP-01 crea una
+orden real. No lanzarla en bucle.

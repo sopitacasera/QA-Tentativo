@@ -1,0 +1,25 @@
+2026-10-18 21:21:34 INFO utils.driver_factory Navegador chrome listo. headless=True timeout=30s
+2026-10-18 21:21:34 INFO test_guest_checkout Abrir la tienda http://opencart.abstracta.us/
+2026-10-18 21:21:43 INFO test_guest_checkout Agregar producto 1 de 2: MacBook
+2026-10-18 21:21:47 INFO test_guest_checkout Resumen del minicart: 1 item(s) - $602.00
+2026-10-18 21:21:47 INFO test_guest_checkout Agregar producto 2 de 2: iPhone
+2026-10-18 21:21:50 INFO test_guest_checkout Resumen del minicart: 2 item(s) - $725.20
+2026-10-18 21:21:50 INFO test_guest_checkout Abrir el carrito desde el encabezado
+2026-10-18 21:21:52 INFO conftest Evidencia guardada: 01-carrito.png
+2026-10-18 21:21:52 INFO test_guest_checkout Iniciar checkout como invitado. Correo sintetico: qa.guest.a4975abed3cb@example.com
+2026-10-18 21:22:00 INFO test_guest_checkout Envio ofrecido: Please select the preferred shipping method to use on this order. Flat Rate Flat Shipping Rate - $8.00 Add Comments About Your Order
+2026-10-18 21:22:02 INFO test_guest_checkout Resumen antes de confirmar: Product Name Model Quantity Unit Price Total iPhone product 11 1 $123.20 $123.20 MacBook Product 16 1 $602.00 $602.00 Sub-Total: $601.00 Flat Shipping Rate: $5.00 Eco Tax (-2.00): $6.00 VAT (20%): $121.20 Total: $733.20
+2026-10-18 21:22:02 INFO conftest Evidencia guardada: 02-confirmacion-de-orden.png
+2026-10-18 21:22:04 INFO conftest Evidencia guardada: 03-orden-colocada.png
+2026-10-18 21:22:04 INFO test_guest_checkout Resultado final: Your order has been placed!
+2026-10-18 21:22:08 INFO utils.driver_factory Navegador chrome listo. headless=True timeout=30s
+2026-10-18 21:22:12 INFO test_guest_checkout Agregar producto 1 de 1: MacBook
+2026-10-18 21:22:15 INFO test_guest_checkout Resumen del minicart: 1 item(s) - $602.00
+2026-10-18 21:22:20 WARNING pages.cart_page El clic en Shopping Cart no navego. Se sigue el mismo enlace.
+2026-10-18 21:22:25 INFO conftest Evidencia guardada: 04-facturacion-vacia.png
+2026-10-18 21:22:25 INFO test_guest_checkout Errores de facturacion vacia: First Name must be between 1 and 32 characters! Last Name must be between 1 and 32 characters! E-Mail address does not appear to be valid! Telephone must be between 3 and 32 characters! Address 1 must be between 3 and 128 characters! City must be between 2 and 128 characters! Postcode must be between 2 and 10 characters! Please select a region / state!
+2026-10-18 21:22:29 INFO utils.driver_factory Navegador chrome listo. headless=True timeout=30s
+2026-10-18 21:22:32 INFO test_guest_checkout Agregar producto 1 de 1: iPhone
+2026-10-18 21:22:36 INFO test_guest_checkout Resumen del minicart: 1 item(s) - $123.20
+2026-10-18 21:22:46 INFO conftest Evidencia guardada: 05-sin-aceptar-terminos.png
+2026-10-18 21:22:46 INFO test_guest_checkout Respuesta al omitir terminos: Warning: You must agree to the Terms & Conditions! ×

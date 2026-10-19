@@ -1,0 +1,15 @@
+{
+  "caso": "CP-02 Consulta por id",
+  "metodo": "GET /v2/pet/147028996",
+  "http": 200,
+  "duracionMs": 109,
+  "salida": {
+    "id": 147028996,
+    "name": "Mascota-147028996",
+    "photoUrls": [
+      "https://example.com/mascota.jpg"
+    ],
+    "tags": [],
+    "status": "available"
+  }
+}

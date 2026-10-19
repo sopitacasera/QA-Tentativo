@@ -1,0 +1,120 @@
+CONCLUSIONES - Pruebas de la API PetStore
+Documentación: https://petstore.swagger.io/
+Base: https://petstore.swagger.io/v2
+Ejecución registrada: 2026-10-18 21:37, hora local
+Resultado de la suite: 5 passed en unos 2 segundos
+Herramienta: Cypress 15.21.1, Electron headless, Node 24.15.0
+Mascota de esa corrida: id 147028996. Se borró al finalizar.
+
+
+1. Veredicto
+
+El ejercicio se puede entregar. Los cuatro pasos del enunciado pasan y
+queda un negativo adicional.
+
+Si esta misma API fuera la de una tienda real, la recomendación sería no
+liberar las escrituras así: no hay autenticación y el cliente elige el id.
+Eso está abajo. No se convirtió en fallo de la prueba porque la demo
+pública está hecha para usarse de esa forma, y el enunciado pide recorrer
+el ciclo de la mascota.
+
+
+Trazabilidad del enunciado
+
+Pedido                                      Prueba y evidencia
+Añadir una mascota a la tienda              CP-01. POST /pet. HTTP 200. 01-alta.json
+Consultar la mascota por id                 CP-02. GET /pet/147028996. HTTP 200. 02-consulta-por-id.json
+Actualizar nombre y estado a sold           CP-03. PUT /pet y una lectura posterior. HTTP 200. 03-actualizacion.json
+Consultar la modificada por estado          CP-04. GET /pet/findByStatus?status=sold. HTTP 200. 04-busqueda-por-estado.json
+
+
+2. Diseño de la prueba
+
+Los cinco casos corren en orden y comparten el mismo id. No se pueden
+reordenar: la consulta y la actualización dependen del alta.
+
+CP-01. Alta. Positivo.
+Entrada: id aleatorio de 9 dígitos, nombre Mascota-{id}, una URL de foto
+y estado available. photoUrls va en el cuerpo porque el contrato lo exige.
+Esperado: HTTP 200 y el mismo id, nombre y estado.
+Obtenido: passed. 677 ms. El id devuelto fue 147028996.
+
+CP-02. Consulta por id. Positivo.
+Esperado: la mascota recién creada, todavía available.
+Obtenido: passed. 109 ms. Nombre Mascota-147028996 y estado available.
+
+CP-03. Actualización. Positivo.
+Entrada: el mismo id, nombre Mascota-vendida-{id}, estado sold.
+Esperado: HTTP 200 en el PUT y, al leer de nuevo por id, el nombre nuevo
+y el estado sold. La segunda lectura evita dar por bueno un PUT que solo
+devuelve lo que se le envió.
+Obtenido: passed. La lectura posterior confirmó nombre y estado sold.
+
+CP-04. Búsqueda por estado. Positivo.
+Esperado: la lista de estado sold incluye esa mascota, con el nombre nuevo.
+Obtenido: passed al primer intento. 328 ms. La lista traía 417 mascotas
+y la nuestra estaba entre ellas.
+
+CP-05. Id inexistente. Negativo.
+Esperado: HTTP 404 y un mensaje de mascota no encontrada. No crea datos.
+Obtenido: passed. 109 ms. Cuerpo: code 1, type error, message "Pet not found".
+
+Al cierre, un DELETE borra la mascota de esta corrida. La demo es
+compartida y no hace falta dejarla ahí. La evidencia queda en los JSON.
+
+
+3. Qué se vio en la API
+
+OBS-01. El cliente manda el id.
+La demo acepta el id en el POST y lo guarda tal cual. Dos personas pueden
+elegir el mismo número y pisarse la mascota. Por eso esta suite usa un
+aleatorio de 9 dígitos. En una tienda real el id debería generarlo el
+servidor. Severidad media si esto fuera producción. Aquí es el contrato
+publicado, así que no rompe el caso del enunciado.
+
+OBS-02. Alta, cambio y borrado no piden autenticación.
+Cualquiera con la URL puede crear, modificar o borrar. En la demo es el
+comportamiento publicado. En una tienda real bloquearía la salida.
+
+OBS-03. La búsqueda por estado no está paginada.
+En esta corrida findByStatus?status=sold devolvió 417 mascotas de todos
+los que usan la demo, no solo la nuestra. La prueba encontró la suya, pero
+la lista es compartida y crece. En una API real haría falta paginación y
+un dueño del dato. No se midió carga: 417 registros respondieron en 328 ms
+esta vez, y eso no es un umbral.
+
+
+4. Herramienta
+
+Cypress.io está entre las dos que el enunciado marca como deseables.
+Karate no se usó porque exige Java y en esta máquina no hay Java.
+Las llamadas son cy.request contra la base /v2. No hay pantalla que
+capturar: la evidencia son el informe HTML y los JSON de entrada y salida.
+
+
+5. Criterio de salida
+
+Entrada: Node 20 o superior, internet y la demo de Swagger respondiendo.
+
+Salida de este ejercicio: CP-01 a CP-04 en verde, con CP-05 también en
+verde, el informe HTML y los JSON de evidencia.
+
+Decisión: entregar el ejercicio.
+
+Salida si esto fuera una tienda real: no publicar las escrituras sin
+autenticación, no aceptar el id del cliente y paginar la búsqueda por
+estado. Después, repetir CP-01 a CP-04.
+
+
+6. Evidencia
+
+reports/report.html
+reports/cypress-results.json
+reports/evidencia/01-alta.json
+reports/evidencia/02-consulta-por-id.json
+reports/evidencia/03-actualizacion.json
+reports/evidencia/04-busqueda-por-estado.json
+reports/evidencia/05-id-inexistente.json
+
+Cómo volver a ejecutarla está en readme.txt. Cada corrida crea una mascota
+nueva y la borra al final.

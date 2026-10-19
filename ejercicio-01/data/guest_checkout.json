@@ -1,0 +1,14 @@
+{
+  "first_name": "Ana",
+  "last_name": "Pruebas",
+  "telephone": "0990001122",
+  "address_1": "10 Downing Street",
+  "city": "London",
+  "postcode": "SW1A 1AA",
+  "country": "United Kingdom",
+  "zone": "Greater London",
+  "products": ["MacBook", "iPhone"],
+  "payment_method": "cod",
+  "shipping_method": "flat.flat",
+  "expected_confirmation": "Your order has been placed!"
+}

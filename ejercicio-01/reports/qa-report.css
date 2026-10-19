@@ -1,0 +1,56 @@
+body {
+  color: #1f2937;
+  background: #f8fafc;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+
+h2 {
+  color: #111827;
+}
+
+#environment td {
+  color: #111827;
+  padding: 8px 12px;
+}
+
+#environment tr:nth-child(odd) {
+  background: #f1f5f9;
+}
+
+.verdict {
+  max-width: 920px;
+  margin: 8px 0 18px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1px solid #d6d3d1;
+  border-left: 4px solid #0f766e;
+}
+
+.verdict h2 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.verdict p {
+  margin: 6px 0;
+  line-height: 1.45;
+}
+
+.col-caso {
+  min-width: 280px;
+  font-weight: 600;
+}
+
+#results-table {
+  background: #ffffff;
+}
+
+.media-container img {
+  max-width: 960px;
+  height: auto;
+  border: 1px solid #e5e7eb;
+}

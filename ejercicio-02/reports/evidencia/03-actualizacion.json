@@ -1,0 +1,24 @@
+{
+  "caso": "CP-03 Actualizar nombre y estado sold",
+  "metodo": "PUT /v2/pet y GET /v2/pet/{id}",
+  "entrada": {
+    "id": 147028996,
+    "name": "Mascota-vendida-147028996",
+    "photoUrls": [
+      "https://example.com/mascota.jpg"
+    ],
+    "status": "sold"
+  },
+  "httpPut": 200,
+  "httpGet": 200,
+  "duracionMs": 139,
+  "salida": {
+    "id": 147028996,
+    "name": "Mascota-vendida-147028996",
+    "photoUrls": [
+      "https://example.com/mascota.jpg"
+    ],
+    "tags": [],
+    "status": "sold"
+  }
+}
